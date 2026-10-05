@@ -1,0 +1,119 @@
+/mnt/data/a443/firestore/rules:13:      allow read: if signedIn() && (request.auth.uid == userId || isAdmin());
+/mnt/data/a443/firestore/rules:14:      allow create: if signedIn() && request.auth.uid == userId
+/mnt/data/a443/firestore/rules:15:        && request.resource.data.verificationStatus in ['unsubmitted', 'pending'];
+/mnt/data/a443/firestore/rules:16:      allow update: if (signedIn() && request.auth.uid == userId
+/mnt/data/a443/firestore/rules:17:        && request.resource.data.role == resource.data.role
+/mnt/data/a443/firestore/rules:18:        && unchangedUserField('accountStatus')
+/mnt/data/a443/firestore/rules:24:        && unchangedUserField('accountStatusReason')
+/mnt/data/a443/firestore/rules:26:        && unchangedUserField('accountStatusUpdatedAt')
+/mnt/data/a443/firestore/rules:27:        && unchangedUserField('accountStatusUpdatedBy')
+/mnt/data/a443/firestore/rules:28:        && (request.resource.data.verificationStatus == resource.data.verificationStatus
+/mnt/data/a443/firestore/rules:29:            || (resource.data.verificationStatus == 'unsubmitted' && request.resource.data.verificationStatus == 'pending')))
+/mnt/data/a443/firestore/rules:32:      match /incomingCalls/{callId} { allow read: if signedIn() && request.auth.uid == userId; allow write: if false; }
+/mnt/data/a443/firestore/rules:33:      match /verificationAudit/{auditId} { allow read: if isAdmin(); allow write: if false; }
+/mnt/data/a443/firestore/rules:34:      match /adminStatusAudit/{auditId} { allow read: if isAdmin(); allow write: if false; }
+/mnt/data/a443/firestore/rules:36:    match /adminStatusAudit/{auditId} { allow read: if isAdmin(); allow write: if false; }
+/mnt/data/a443/firestore/rules:38:      allow read: if isAdmin() || (signedIn() && resource.data.userId == request.auth.uid);
+/mnt/data/a443/firestore/rules:42:      allow read: if isAdmin();
+/mnt/data/a443/firestore/rules:46:      allow read: if isAdmin() || (signedIn() && (resource.data.customerId == request.auth.uid || resource.data.deliveryPartnerId == request.auth.uid || resource.data.negotiatingPartnerId == request.auth.uid));
+/mnt/data/a443/firestore/rules:48:      allow create: if false;
+/mnt/data/a443/firestore/rules:49:      allow update: if signedIn() && (resource.data.customerId == request.auth.uid || resource.data.deliveryPartnerId == request.auth.uid)
+/mnt/data/a443/firestore/rules:74:      && unchangedUserField('cancelledAt')
+/mnt/data/a443/firestore/rules:103:      match /offers/{offerId} { allow read: if isCustomer() || isPartner(); allow write: if false; }
+/mnt/data/a443/firestore/rules:104:      match /tracking/{trackingId} { allow create, update: if isPartner() && isActiveAccepted() && trackingId == 'deliveryPartner'; allow delete: if isPartner() && trackingId == 'deliveryPartner'; allow read: if (isCustomer() || isPartner()) && trackingId == 'deliveryPartner'; }
+/mnt/data/a443/firestore/rules:105:      match /payments/{paymentId} { allow read: if isCustomer() || isPartner(); allow write: if false; }
+/mnt/data/a443/firestore/rules:106:      match /messages/{messageId} { allow read: if isCustomer() || isPartner() || (signedIn() && order().negotiatingPartnerId == request.auth.uid); allow create, update, delete: if false; }
+/mnt/data/a443/firestore/rules:108:        allow read: if (isCustomer() || isPartner()) && isActiveAccepted();
+/mnt/data/a443/firestore/rules:109:        allow create: if false;
+/mnt/data/a443/firestore/rules:110:        allow update: if (isCustomer() || isPartner()) && isActiveAccepted()
+/mnt/data/a443/firestore/rules:123:        allow delete: if false;
+/mnt/data/a443/firestore/rules:130:      allow read: if false;
+/mnt/data/a443/firestore/rules:134:      allow read: if isAdmin();
+/mnt/data/a443/firestore/rules:138:      allow read: if isAdmin();
+/mnt/data/a443/firestore/rules:142:    match /partnerCapacity/{partnerId} { allow read: if signedIn() && request.auth.uid == partnerId; allow write: if false; }
+/mnt/data/a443/firestore/rules:144:      allow read: if signedIn();
+/mnt/data/a443/firestore/rules:145:      allow create: if signedIn() && request.resource.data.ownerId == request.auth.uid
+/mnt/data/a443/firestore/rules:146:        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.verificationStatus == 'verified'
+/mnt/data/a443/firestore/rules:147:        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'deliveryPartner'
+/mnt/data/a443/firestore/rules:155:      allow read: if signedIn() && (resource.data.requesterId == request.auth.uid
+/mnt/data/a443/firestore/rules:161:      allow read: if signedIn() && (resource.data.requesterId == request.auth.uid || resource.data.status == 'open');
+/mnt/data/a443/firestore/rules:162:      allow create: if signedIn() && request.resource.data.requesterId == request.auth.uid
+/mnt/data/a443/firestore/rules:163:        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.verificationStatus == 'verified'
+/mnt/data/a443/firestore/rules:170:      allow read: if signedIn() && (resource.data.requesterId == request.auth.uid || resource.data.responderId == request.auth.uid);
+/mnt/data/a443/firestore/rules:174:    match /partnerPenalties/{penaltyId} { allow read: if isAdmin() || (signedIn() && resource.data.partnerId == request.auth.uid); allow write: if false; }
+/mnt/data/a443/firestore/rules:175:    match /partnerPenaltyAudit/{auditId} { allow read: if isAdmin(); allow write: if false; }
+/mnt/data/a443/functions/lib/index.js:119:exports.createOrder = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:125:  if (user.role !== 'customer' || user.verificationStatus !== 'verified' || ['suspended', 'blocked'].includes(user.accountStatus)) {
+/mnt/data/a443/functions/lib/index.js:176:exports.getAdminFinancialSummary = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:191:  const penaltySnap = await db.collection('partnerPenalties').where('status', '==', 'outstanding').limit(5000).get();
+/mnt/data/a443/functions/lib/index.js:192:  for (const p of penaltySnap.docs) outstandingPartnerPenalties += Math.max(0, Number(p.data()?.amount || 0));
+/mnt/data/a443/functions/lib/index.js:237:exports.adminSetUserStatus = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:249:    const before = snap.data()?.accountStatus || 'active';
+/mnt/data/a443/functions/lib/index.js:250:    tx.update(userRef, { accountStatus: status, accountStatusUpdatedAt: FieldValue.serverTimestamp(), accountStatusUpdatedBy: request.auth.uid });
+/mnt/data/a443/functions/lib/index.js:256:exports.adminCancelOrder = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:278:      cancelledAt: FieldValue.serverTimestamp(), updatedAt: FieldValue.serverTimestamp()
+/mnt/data/a443/functions/lib/index.js:295:exports.settlePartnerPenalty = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:297:  const penaltyId = requireString(request.data?.penaltyId, 'penaltyId');
+/mnt/data/a443/functions/lib/index.js:303:  const ref = db.collection('partnerPenalties').doc(penaltyId);
+/mnt/data/a443/functions/lib/index.js:320:      penaltyId,
+/mnt/data/a443/functions/lib/index.js:333:    await sendUserPush(result.partnerId, 'Penalty updated', `Your ₹${result.amount.toFixed(2)} penalty was marked ${status}.`, { type: 'partner_penalty_updated', orderId: result.orderId || '' });
+/mnt/data/a443/functions/lib/index.js:335:  return { ok: true, penaltyId, status };
+/mnt/data/a443/functions/lib/index.js:338:exports.createComplaint = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:347:  if (user.accountStatus && user.accountStatus !== 'active') throw new HttpsError('permission-denied', 'Account is not active.');
+/mnt/data/a443/functions/lib/index.js:357:  await ref.set({ userId: request.auth.uid, role: user.role || null, orderId, category, description, status: 'open', resolution: '', createdAt: FieldValue.serverTimestamp(), updatedAt: FieldValue.serverTimestamp() });
+/mnt/data/a443/functions/lib/index.js:361:exports.resolveComplaint = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:379:exports.getSystemSettings = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:386:exports.getPartnerSystemConfig = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:391:  if (profile.role !== 'deliveryPartner') throw new HttpsError('permission-denied', 'Delivery Partner access required.');
+/mnt/data/a443/functions/lib/index.js:392:  if (profile.accountStatus && profile.accountStatus !== 'active') throw new HttpsError('permission-denied', 'Account is not active.');
+/mnt/data/a443/functions/lib/index.js:401:exports.updateSystemSettings = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:444:exports.adminPasswordLogin = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:473:exports.setAdminPassword = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:517:exports.completeProfileVerification = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:523:  if (['suspended', 'blocked'].includes(profile.accountStatus)) throw new HttpsError('permission-denied', 'Account is not eligible for verification.');
+/mnt/data/a443/functions/lib/index.js:524:  if (profile.verificationStatus === 'verified') return { ok: true, status: 'verified' };
+/mnt/data/a443/functions/lib/index.js:527:  if (!['customer', 'deliveryPartner'].includes(profile.role)) throw new HttpsError('failed-precondition', 'Valid role is required.');
+/mnt/data/a443/functions/lib/index.js:529:  if (profile.role === 'deliveryPartner' && settings.allowNewPartnerRegistrations === false && !['verified', 'rejected'].includes(profile.verificationStatus)) {
+/mnt/data/a443/functions/lib/index.js:533:    verificationStatus: 'verified',
+/mnt/data/a443/functions/lib/index.js:541:exports.setVerificationStatus = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:555:    const current = snap.data()?.verificationStatus;
+/mnt/data/a443/functions/lib/index.js:558:      verificationStatus: status,
+/mnt/data/a443/functions/lib/index.js:573:exports.viewOrderDetails = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:592:exports.submitDeliveryOffer = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:596:  const role = request.data?.role;
+/mnt/data/a443/functions/lib/index.js:597:  if (!['customer', 'deliveryPartner'].includes(role)) throw new HttpsError('invalid-argument', 'Invalid offer role.');
+/mnt/data/a443/functions/lib/index.js:604:    const allowed = role === 'customer' ? order.customerId === request.auth.uid : (order.deliveryPartnerId === request.auth.uid || order.negotiatingPartnerId === request.auth.uid);
+/mnt/data/a443/functions/lib/index.js:607:    tx.set(offerRef, { userId: request.auth.uid, role, amount, status: 'pending', createdAt: FieldValue.serverTimestamp() });
+/mnt/data/a443/functions/lib/index.js:611:  const notifyUser = role === 'customer' ? orderAfterOffer.deliveryPartnerId : orderAfterOffer.customerId;
+/mnt/data/a443/functions/lib/index.js:616:exports.acceptDeliveryOffer = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:630:    const participantOk = (offer.role === 'customer' && order.customerId === offer.userId) || (offer.role === 'deliveryPartner' && order.deliveryPartnerId === offer.userId);
+/mnt/data/a443/functions/lib/index.js:646:exports.approveFinalDeliveryPrice = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:683:exports.startOrderCall = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:726:exports.acceptOrderCall = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:751:exports.getVoiceIceServers = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:771:exports.endOrderCall = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:839:exports.sendOrderMessage = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:857:exports.finalAcceptOrder = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:860:  if (!callerProfile.exists || callerProfile.data()?.role !== 'deliveryPartner') throw new HttpsError('permission-denied', 'Only a Delivery Partner can accept delivery orders.');
+/mnt/data/a443/functions/lib/index.js:872:    if (!partnerProfile.exists || partnerProfile.data()?.role !== 'deliveryPartner' || partnerProfile.data()?.verificationStatus !== 'verified' || ['suspended', 'blocked'].includes(partnerProfile.data()?.accountStatus)) throw new HttpsError('failed-precondition', 'Active and verified Delivery Partner account is required before accepting an order.');
+/mnt/data/a443/functions/lib/index.js:890:exports.selectPaymentMethod = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:914:exports.createPlatformFeePayment = onCall({ secrets: [razorpayKeyId, razorpayKeySecret] }, async (request) => {
+/mnt/data/a443/functions/lib/index.js:932:exports.verifyPlatformFeePayment = onCall({ secrets: [razorpayKeyId, razorpayKeySecret] }, async (request) => {
+/mnt/data/a443/functions/lib/index.js:951:exports.razorpayWebhook = onRequest({ secrets: [razorpayKeySecret, razorpayWebhookSecret] }, async (request, response) => {
+/mnt/data/a443/functions/lib/index.js:990:exports.submitManualPlatformFeePayment = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:1021:exports.getPendingPlatformFeeManualPayments = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:1038:exports.approveManualPlatformFeePayment = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:1071:exports.confirmPaymentReceived = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:1094:exports.completePaidOrder = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:1118:exports.expireOverdueOrders = onSchedule({ schedule: 'every 15 minutes', timeZone: 'Asia/Kolkata' }, async () => {
+/mnt/data/a443/functions/lib/index.js:1136:          const penaltyRef = db.collection('partnerPenalties').doc();
+/mnt/data/a443/functions/lib/index.js:1137:          tx.set(penaltyRef, { partnerId: order.deliveryPartnerId, orderId: doc.id, amount: ORDER_TIMEOUT_PENALTY, reason: 'Order exceeded 24-hour active window', status: 'outstanding', createdAt: FieldValue.serverTimestamp() });
+/mnt/data/a443/functions/lib/index.js:1146:            if (failedCalls >= 3 && customer.accountStatus !== 'blocked') {
+/mnt/data/a443/functions/lib/index.js:1147:              tx.update(customerRef, { accountStatus: 'suspended', accountStatusReason: 'Customer did not respond to repeated Delivery Partner call attempts during an active order.', accountStatusUpdatedAt: FieldValue.serverTimestamp(), autoSuspendedForOrderId: doc.id });
+/mnt/data/a443/functions/lib/index.js:1148:              tx.set(db.collection('adminStatusAudit').doc(), { userId: order.customerId, before: customer.accountStatus || 'active', after: 'suspended', reason: 'Automatic suspension after 24-hour order timeout with 3+ unanswered Delivery Partner call attempts.', orderId: doc.id, automated: true, createdAt: FieldValue.serverTimestamp() });
+/mnt/data/a443/functions/lib/index.js:1164:exports.createRideRequest = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:1201:exports.respondRideRequest = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:1265:    tx.update(requestRef, { status: 'cancelled', cancelledAt: FieldValue.serverTimestamp() });
+/mnt/data/a443/functions/lib/index.js:1270:exports.respondRideNeed = onCall(async (request) => {
+/mnt/data/a443/functions/lib/index.js:1326:      tx.update(needRef, {status:'cancelled', cancelledAt:FieldValue.serverTimestamp(), updatedAt:FieldValue.serverTimestamp()});
+/mnt/data/a443/functions/lib/index.js:1327:      if (response.status === 'accepted') tx.update(responseRef, {status:'cancelled', cancelledAt:FieldValue.serverTimestamp()});
